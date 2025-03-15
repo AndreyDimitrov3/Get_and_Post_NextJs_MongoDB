@@ -77,3 +77,5 @@ export default async function handler(req, res) {
       .json({ success: false, error: "Internal Server Error" });
   }
 }
+
+console.log("MONGODB_URI:", process.env.MONGODB_URI);
