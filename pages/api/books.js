@@ -1,5 +1,5 @@
 import dbConnect from "../../lib/dbConnect";
-import Book from "../../models/Post";
+import Book from "../../models/Book";
 import Cors from "cors";
 
 // CORS Middleware
