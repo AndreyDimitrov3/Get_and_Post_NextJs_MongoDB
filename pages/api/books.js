@@ -1,5 +1,5 @@
 import dbConnect from "../../lib/dbConnect";
-import Book from "../../models/Book"; // Make sure it's "Book.js" and not "Post.js"
+import Book from "../../models/Post";
 import Cors from "cors";
 
 // CORS Middleware
