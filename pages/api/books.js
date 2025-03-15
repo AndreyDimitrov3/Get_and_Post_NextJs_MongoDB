@@ -1,8 +1,8 @@
 import dbConnect from "../../lib/dbConnect";
-import Book from "../../models/Post";
+import Book from "../../models/Book"; // Make sure it's "Book.js" and not "Post.js"
 import Cors from "cors";
 
-// Set up CORS middleware
+// CORS Middleware
 const cors = Cors({
   methods: ["GET", "POST", "PUT", "HEAD"],
 });
@@ -18,54 +18,62 @@ function runMiddleware(req, res, fn) {
   });
 }
 
-// The main handler for API requests
 export default async function handler(req, res) {
-  // Run the CORS middleware
-  await runMiddleware(req, res, cors);
+  try {
+    await runMiddleware(req, res, cors);
+    await dbConnect();
 
-  const { method } = req;
+    const { method } = req;
 
-  // Connect to the database
-  await dbConnect();
+    switch (method) {
+      case "GET":
+        try {
+          const books = await Book.find({}).limit(10);
+          return res.status(200).json({ success: true, data: books });
+        } catch (error) {
+          console.error("Error fetching books:", error);
+          return res
+            .status(500)
+            .json({ success: false, error: "Failed to fetch books" });
+        }
 
-  switch (method) {
-    case "GET":
-      try {
-        // Fetch all books from the database
-        const books = await Book.find({});
-        res.status(200).json({ success: true, data: books });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-      break;
+      case "POST":
+        try {
+          const { title, author, pages, rating, genres, reviews } = req.body;
 
-    case "POST":
-      try {
-        // Destructure the book details from the request body
-        const { title, author, pages, rating, genres, reviews } = req.body;
+          if (!title || !author || !pages) {
+            return res
+              .status(400)
+              .json({ success: false, error: "Missing required fields" });
+          }
 
-        // Create a new book instance
-        const newBook = new Book({
-          title,
-          author,
-          pages,
-          rating,
-          genres,
-          reviews,
-        });
+          const newBook = new Book({
+            title,
+            author,
+            pages,
+            rating,
+            genres,
+            reviews,
+          });
 
-        // Save the new book to the database
-        const savedBook = await newBook.save();
+          const savedBook = await newBook.save();
+          return res.status(201).json({ success: true, data: savedBook });
+        } catch (error) {
+          console.error("Error adding book:", error);
+          return res
+            .status(500)
+            .json({ success: false, error: "Failed to add book" });
+        }
 
-        // Respond with the saved book
-        res.status(201).json({ success: true, data: savedBook });
-      } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
-      }
-      break;
-
-    default:
-      res.status(400).json({ success: false });
-      break;
+      default:
+        return res
+          .status(400)
+          .json({ success: false, error: "Invalid request method" });
+    }
+  } catch (error) {
+    console.error("API error:", error);
+    return res
+      .status(500)
+      .json({ success: false, error: "Internal Server Error" });
   }
 }
