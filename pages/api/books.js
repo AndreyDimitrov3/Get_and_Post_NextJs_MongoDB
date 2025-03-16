@@ -59,7 +59,6 @@ export default async function handler(req, res) {
           const savedBook = await newBook.save();
           return res.status(201).json({ success: true, data: savedBook });
         } catch (error) {
-          console.error("Error adding book:", error);
           return res
             .status(500)
             .json({ success: false, error: "Failed to add book" });
@@ -77,5 +76,3 @@ export default async function handler(req, res) {
       .json({ success: false, error: "Internal Server Error" });
   }
 }
-
-console.log("MONGODB_URI:", process.env.MONGODB_URI);

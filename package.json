@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.0.14",
+    "autoprefixer": "^10.4.21",
     "axios": "^1.8.3",
     "cors": "^2.8.5",
     "mongoose": "^8.12.1",
@@ -21,7 +22,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4.0.14",
-    "daisyui": "^5.0.3",
+    "daisyui": "^5.0.4",
     "eslint": "^9",
     "eslint-config-next": "15.2.2",
     "nodemon": "^3.1.9",
